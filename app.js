@@ -1,8 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const passportSetup = require('./config/passport-setup');
 const passport = require('passport');
 const cookieSession = require('cookie-session');
-const cors = require('cors')
+const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
@@ -20,7 +22,7 @@ mongoose.connect(URI,{useNewUrlParser:true,useUnifiedTopology:true,useFindAndMod
 app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
-
+app.use(express.static(path.join(__dirname, 'build')));
 app.use(cookieSession({
     maxAge:24*60*60*1000,
     keys:[process.env.COOKIE_KEY]
@@ -32,10 +34,14 @@ app.use(cookieSession({
     keys:[process.env.COOKIE_KEY]
 }));
 
-app.use('/auth',require('./routes/auth-routes'));
+console.log(path.join(__dirname, 'build', 'index.html'))
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+/*app.use('/auth',require('./routes/auth-routes'));
 app.use('/todo',require('./routes/todo-routes'));
 
 
 app.get('/',(req,res)=>{
     res.json('hello');
-})
+})*/
