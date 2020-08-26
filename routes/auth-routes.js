@@ -2,14 +2,9 @@ const router = require('express').Router();
 const passport = require('passport');
 //require('dotenv').config();
 
-
-router.get('/login', (req,res)=>{
-    console.log('Login is here');
-})
-
 router.get('/logout',(req,res)=>{
     req.logOut();
-    res.redirect('/');
+    res.redirect('/login');
 })
 
 router.get('/google', passport.authenticate('google',{
@@ -17,7 +12,8 @@ router.get('/google', passport.authenticate('google',{
 }));
 
 router.get('/google/redirect',passport.authenticate('google'),(req, res)=>{
-    res.redirect('/');
+  var id = req.user._id;
+  res.redirect(`/?id=${id}`);
 })
 
 module.exports =  router;
